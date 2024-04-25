@@ -1,0 +1,29 @@
+{
+    "gravitational_constant": 6.0,
+    "repulsive_constant": 0,
+    "creation_config": {
+        "particle_generation": [],
+        "known_particles": [
+            {
+                "mass": 1000,
+                "position": [400, 400],
+                "velocity": [-3, 0]
+            },
+            {
+                "mass": 1000,
+                "position": [400, 500],
+                "velocity": [3, 0]
+            }
+        ]
+    },
+    "client_config": {
+        "simulation_time_per_frame": 0.5,
+        "frames_per_second": 30,
+        "simulation_duration_seconds": 60
+    },
+    "view_config": {
+        "dimensions": [800, 800],
+        "scale": 1,
+        "center_heaviest": false
+    }
+}

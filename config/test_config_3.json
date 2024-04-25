@@ -1,0 +1,42 @@
+{
+    "gravitational_constant": 10.0,
+    "repulsive_constant": 50,
+    "creation_config": {
+        "particle_generation": [
+            {
+                "num_particles": 100,
+                "distribution_params": {
+                    "mode": "circular",
+                    "fill": true,
+                    "radius": 100,
+                    "center_point": [400,400]
+                },
+                "vector_params": {
+                    "random": false,
+                    "range": [-1, 1],
+                    "base_value": [0,0]
+                },
+                "mass_params": {
+                    "random": true,
+                    "range": [1, 100],
+                    "base_value": 1
+                }
+            }
+        ],
+        "known_particles": [{
+            "mass": 500,
+            "position": [400, 400],
+            "velocity": [0, 0]
+        }]
+    },
+    "client_config": {
+        "simulation_time_per_frame": 0.125,
+        "frames_per_second": 60,
+        "simulation_duration_seconds": 180
+    },
+    "view_config": {
+        "dimensions": [800, 800],
+        "scale": 1,
+        "center_heaviest": true
+    }
+}
