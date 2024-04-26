@@ -22,6 +22,11 @@ class ParticleGenerator:
             return ParticleGenerator._random_float(self.config.mass_params.range[0], self.config.mass_params.range[1]) + float(self.config.mass_params.base_value)
         return float(self.config.mass_params.base_value)
 
+    def _get_particle_radius(self) -> float:
+        if self.config.radius_params.random:
+            return ParticleGenerator._random_float(self.config.radius_params.range[0], self.config.radius_params.range[1]) + float(self.config.radius_params.base_value)
+        return float(self.config.radius_params.base_value)
+
     def _get_particle_vector(self) -> list[float, float]:
         if self.config.vector_params.random:
             return [
@@ -34,8 +39,9 @@ class ParticleGenerator:
         for _ in range(self.config.num_particles):
             mass = self._get_particle_mass()
             vector = self._get_particle_vector()
+            radius = self._get_particle_radius()
             position = [ParticleGenerator._random_float(distribution_config.x_range[0], distribution_config.x_range[1]),ParticleGenerator._random_float(distribution_config.y_range[0], distribution_config.y_range[1])]
-            particle = Particle(mass, position, vector)
+            particle = Particle(mass, position, vector, radius)
             particles.append(particle)
         return particles
 
@@ -61,7 +67,8 @@ class ParticleGenerator:
         for position in positions:
                 mass = self._get_particle_mass()
                 vector = self._get_particle_vector()    
-                particle = Particle(mass, position, vector)
+                radius = self._get_particle_radius()
+                particle = Particle(mass, position, vector, radius)
                 particles.append(particle)
 
         return particles
@@ -74,7 +81,8 @@ class ParticleGenerator:
             position = [x, y]
             mass = self._get_particle_mass()
             vector = self._get_particle_vector()    
-            particle = Particle(mass, position, vector)
+            radius = self._get_particle_radius()
+            particle = Particle(mass, position, vector, radius)
             particles.append(particle)
 
 

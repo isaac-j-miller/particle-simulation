@@ -21,7 +21,7 @@ def main(filename: str):
         if p.mass >= max_mass:
             heaviest_particle_idx = i
             max_mass = p.mass
-    model = SimulationModel(particles, config.gravitational_constant, config.repulsive_constant)
+    model = SimulationModel(particles, config.gravitational_constant)
     view = View(config.view_config, heaviest_particle_idx)
     client = Client(view, model, config.client_config)
     view.display(particles)

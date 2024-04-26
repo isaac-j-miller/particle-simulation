@@ -1,6 +1,5 @@
 {
     "gravitational_constant": 5.0,
-    "repulsive_constant": 100,
     "creation_config": {
         "particle_generation": [{
             "num_particles": 200,
@@ -19,13 +18,19 @@
                 "random": true,
                 "range": [1, 100],
                 "base_value": 4
+            },
+            "radius_params": {
+                "random": true,
+                "range": [1, 10],
+                "base_value": 1
             }
         }],
         "known_particles": [
             {
                 "mass": 1000,
                 "position": [200,200],
-                "velocity": [1.5, 1.5]
+                "velocity": [1.5, 1.5],
+                "radius": 5
             }
         ]
     },

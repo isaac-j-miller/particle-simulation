@@ -41,11 +41,18 @@ class CircularParticleDistributionParams(DistributionParams):
     center_point: tuple[float, float]
 
 @dataclass
+class RadiusParams:
+    random: bool
+    range: tuple[float, float]
+    base_value: float
+
+@dataclass
 class GenerationParams:
     num_particles: int
     distribution_params: DistributionParams
     vector_params: VectorParams
     mass_params: MassParams
+    radius_params: RadiusParams
 
 
 @dataclass

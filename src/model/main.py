@@ -1,9 +1,16 @@
 from dataclasses import dataclass
 from typing import Union
 import math
+import numpy as np
 from numpy import linalg as la, array
 
 from .typings import Particle
+
+@dataclass
+class PreliminaryVector:
+    current_position: list[float, float]
+    next_position: list[float, float]
+    difference_vector: list[float, float]
 
 FLOAT_ZERO = 1e-12
 
@@ -12,11 +19,11 @@ FLOAT_TOLERANCE = 1e-6
 def float_equals(a: float, b: float) -> bool:
     return abs(a-b) <= FLOAT_TOLERANCE
 
-@dataclass
-class PreliminaryVector:
-    current_position: list[float, float]
-    next_position: list[float, float]
-    difference_vector: list[float, float]
+def eval_equation(v: tuple[float, float], c: tuple[float, float], t: float)-> tuple[float, float]:
+    x = v[0]*t + c[0]
+    y = v[1]*t + c[1]
+    return (x, y)
+
 
 # ((vx, x0), x1), ((vy, y0), y1)
 def to_equation(vect: PreliminaryVector) -> tuple[tuple[tuple[float, float], float]]:
@@ -35,30 +42,77 @@ def solve_intersection(eq1: tuple[tuple[float, float], float], eq2: tuple[tuple[
         return None
     
 
-    # v1', v2'
-    # [additive_solution, subtractive_solution]
-def solve_momentum_equation(m1: float, m2: float, v1: float, v2: float) -> tuple[tuple[float, float], tuple[float, float]]:
-    p_0 = m1*v1+m2*v2
-    # p_0 = m1v1' + m2v2'
-    k_0 = 0.5*m1*v1**2 + 0.5*m2*v2**2
-    # k_0 = 0.5m1v1'**2 + 0.5m2v2'**2
-    v2_prime_denominator = m2*(m2+m1)
-    v2_prime_numerator_1st = p_0*m2
-    v2_prime_numerator_under_sqrt = m1*m2*(2*k_0*m2+2*k_0*m1 - p_0**2)
-    add_soln_v2_prime = (v2_prime_numerator_1st + math.sqrt(v2_prime_numerator_under_sqrt))/v2_prime_denominator
-    sub_soln_v2_prime = (v2_prime_numerator_1st + math.sqrt(v2_prime_numerator_under_sqrt))/v2_prime_denominator
-    add_soln_v1_prime = (p_0 - m2*add_soln_v2_prime)/m1
-    sub_soln_v1_prime = (p_0 - m2*sub_soln_v2_prime)/m2
-    return (add_soln_v1_prime, add_soln_v2_prime), (sub_soln_v1_prime, sub_soln_v2_prime)
-    
+def magnitude(vector: tuple[float, float]) -> float:
+    return math.sqrt(vector[0]**2+vector[1]**2)
+
+def quadratic_equation(a: float, b: float, c: float) -> Union[list[float,float], None]:
+    if a == 0:
+        return None
+    discriminant = b**2-4*a*c
+    if(discriminant < 0):
+        return None
+    if float_equals(discriminant, 0):
+        return [-0.5*b/a]
+    sqrt = math.sqrt(discriminant)
+    add = (-1*b + sqrt)/(2*a)
+    sub = (-1*b - sqrt)/(2*a)
+    return [sub, add]
+
+def get_collision_time(
+        r1: float, r2: float, 
+        vect1: PreliminaryVector,
+        vect2: PreliminaryVector,
+        time_delta: float) -> Union[None, float]:
+    v1 = vect1.difference_vector
+    v2 = vect2.difference_vector
+    i1 = vect1.current_position
+    i2 = vect2.current_position
+    # create a quadratic equation to solve for t(d) where d = r1+r2
+    # ax^2 + bx + c = 0
+    a = v2[0]**2 - 2*v2[0]*v1[0] + v1[0]**2 + v2[1]**2 - 2*v2[1]*v1[1] + v1[1]**2
+    b = 2*(v2[0]*i2[0] - i2[0]*v1[0] - v2[0]*i1[0] + v1[0]*i1[0] + v2[1]*i2[1] - i2[1]*v1[1] - v2[1]*i1[1] + v1[1]*i1[1])
+    c = i2[0]**2 - 2 * (i2[0]*i1[0]+i2[1]*i1[1]) + i1[0]**2 + i2[1]**2 + i1[1]**2 - (r1+r2)**2
+    intersection_times = quadratic_equation(a, b, c)
+    if intersection_times is None:
+        return None
+    acceptable = [t for t in intersection_times if t >= -1*FLOAT_ZERO and t <= time_delta+FLOAT_ZERO]
+    if len(acceptable) == 0:
+        # they have already collided or won't collide within the time frame
+        return None
+    return acceptable[0]
+
+def solve_2d_momentum_equation_2(
+        m1: float, m2: float, 
+        vect1: PreliminaryVector,
+        vect2: PreliminaryVector,
+        time_delta: float,
+        intersection_time: float
+        ) -> Union[None, tuple[PreliminaryVector, PreliminaryVector]]:
+    v1 = vect1.difference_vector
+    v2 = vect2.difference_vector
+    i1 = vect1.current_position
+    i2 = vect2.current_position
+    c1 = eval_equation(v1, i1, intersection_time)
+    c2 = eval_equation(v2, i2, intersection_time)
+    v1_vect = array(v1)
+    v2_vect = array(v2)
+    c1_vect = array(c1)
+    c2_vect = array(c2)
+    fv1 = v1_vect - (2*m2/(m1+m2))*(np.dot(v1_vect-v2_vect, c1_vect-c2_vect)/magnitude(c1_vect-c2_vect)**2)*(c1_vect-c2_vect)
+    fv2 = v2_vect - (2*m1/(m1+m2))*(np.dot(v2_vect-v1_vect, c2_vect-c1_vect)/magnitude(c2_vect-c1_vect)**2)*(c2_vect-c1_vect)
+    dt_after_intersection=time_delta-intersection_time
+    fp1 = eval_equation(fv1,c1, dt_after_intersection)
+    fp2 = eval_equation(fv2,c2, dt_after_intersection)
+    f1 = PreliminaryVector([c1[0], c1[1]], fp1, [fv1[0], fv1[1]])
+    f2 = PreliminaryVector([c2[0], c2[1]], fp2, [fv2[0], fv2[1]])
+    return f1, f2
+
 class SimulationModel:
     particles: list[Particle]
     gravitational_constant: float
-    repulsive_constant: float
-    def __init__(self, particles: list[Particle], gravitational_constant: float, repulsive_constant: float):
+    def __init__(self, particles: list[Particle], gravitational_constant: float):
         self.particles = particles
         self.gravitational_constant = gravitational_constant
-        self.repulsive_constant = repulsive_constant
 
     def calculate_new_positions(self, time_delta: float):
         forces_x: list[float] = [0 for _ in self.particles]
@@ -78,11 +132,9 @@ class SimulationModel:
                 if distance_squared == 0:
                     continue
                 gravitational_force = self.gravitational_constant * p1.mass * p2.mass / distance_squared
-                repulsive_force = self.repulsive_constant / distance_squared**2
-                net_force = gravitational_force - repulsive_force
                 theta = math.atan2(delta_y, delta_x)
-                grav_force_x = net_force * math.cos(theta)
-                grav_force_y = net_force * math.sin(theta)
+                grav_force_x = gravitational_force * math.cos(theta)
+                grav_force_y = gravitational_force * math.sin(theta)
                 forces_x[i] += grav_force_x
                 forces_y[i] += grav_force_y
                 forces_x[j] -= grav_force_x
@@ -104,10 +156,10 @@ class SimulationModel:
             preliminary_vects.append(preliminary)
         
         done_collisions = set()
+        particles_processed = set()
         for i, p1 in enumerate(preliminary_vects):
             particle_1 = self.particles[i]
             # TODO: allow for > 2 collisions
-            soonest_collision_coords = None
             soonest_collision_time = None
             soonest_collision_idx = None
             for j, p2 in enumerate(preliminary_vects):
@@ -117,42 +169,36 @@ class SimulationModel:
                 hash_2 = f"{j}_{i}"
                 if hash_1 in done_collisions or hash_2 in done:
                     continue
-                p1_x, p1_y = to_equation(p1)
-                p2_x, p2_y = to_equation(p2)
-                intersection_x = solve_intersection(p1_x, p2_x)
-                if intersection_x is not None and intersection_x[0] >=-1*FLOAT_TOLERANCE and intersection_x[0] < time_delta + FLOAT_TOLERANCE:
-                    intersection_y = solve_intersection(p1_y, p2_y)
-                    if (
-                        intersection_y is not None and intersection_y[0] >=0 and float_equals(intersection_y[0],intersection_x[0])
-                        ) and (
-                            soonest_collision_time is None or soonest_collision_time > intersection_x[0]
-                            ):                        
-                        soonest_collision_time=intersection_x[0]
-                        soonest_collision_coords=[intersection_x[1], intersection_y[1]]
-                        soonest_collision_idx = j
+                intersection_time= get_collision_time(particle_1.radius, self.particles[j].radius, p1, p2, time_delta)
+                if intersection_time is None:
+                    done_collisions.add(hash_1)
+                    continue
+                soonest_collision_time = intersection_time
+                soonest_collision_idx = j
+                # print(f"imminent collision between {i},{j} at t={soonest_collision_time}")
 
-            if soonest_collision_time is None or soonest_collision_coords is None or soonest_collision_idx is None:
-                done_collisions.add(hash_1)
-                particle_1.position = p1.next_position
-                particle_1.velocity = p1.difference_vector
+            done_collisions.add(hash_1)
+            if soonest_collision_time is None or soonest_collision_idx is None:
                 continue
             particle_2 = self.particles[soonest_collision_idx]
-            v_x_add, v_x_sub = solve_momentum_equation(particle_1.mass, particle_2.mass, p1.difference_vector[0], p2.difference_vector[0])
-            v_y_add, v_y_sub = solve_momentum_equation(particle_1.mass, particle_2.mass, p1.difference_vector[1], p2.difference_vector[1])
-            # TODO: figure out why we have 2 solutions, and which one to use. 
-            # for now, use the additive solution
-            # print(f"X add: ({v_x_add[0]}, {v_x_add[1]}); sub: ({v_x_sub[0]}, {v_x_sub[1]});")
-            # print(f"Y add: ({v_y_add[0]}, {v_y_add[1]}); sub: ({v_y_sub[0]}, {v_y_sub[1]});")
-            remaining_time = time_delta - soonest_collision_time
-            p1_x = v_x_sub[0] * remaining_time + soonest_collision_coords[0]
-            p1_y = v_y_sub[0] * remaining_time + soonest_collision_coords[1]
-            particle_1.position = [p1_x, p1_y]
-            particle_1.velocity = [v_x_sub[0], v_y_sub[0]]
+            result = solve_2d_momentum_equation_2(particle_1.mass, particle_2.mass, p1, p2, time_delta, soonest_collision_time)
+            if result is None:
+                # print(f"invalid solution for collision of {i}, {soonest_collision_idx}")
+                continue
+            # print(f"valid solution for collision of {i}, {soonest_collision_idx}")
+            p1_new, p2_new = result
+            particle_1.position = p1_new.next_position
+            particle_1.velocity = p1_new.difference_vector
+            particle_2.position = p2_new.next_position
+            particle_2.velocity = p2_new.difference_vector
+            particles_processed.add(i)
+            particles_processed.add(j)
 
-            p2_x = v_x_sub[1] * remaining_time + soonest_collision_coords[0]
-            p2_y = v_y_sub[1] * remaining_time + soonest_collision_coords[1]
-            particle_2.position = [p2_x, p2_y]
-            particle_2.velocity = [v_x_sub[1], v_y_sub[1]]
-            done_collisions.add(hash_1)
+        for i, prelim in enumerate(preliminary_vects):
+            if i in particles_processed:
+                continue
+            p = self.particles[i]
+            p.position = prelim.next_position
+            p.velocity = prelim.difference_vector
         
         

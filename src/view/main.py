@@ -26,9 +26,13 @@ class View:
         
         for i, p in enumerate(particles):
             scaled = [int(((p.position[0]+transform[0])/ self.config.scale)) + scaled_transform[0], int((p.position[1]+transform[1])/self.config.scale)+scaled_transform[1]]
-            # color = [255, 255, 255] if i % 2 == 0 else [255,255,0] 
+            color = [255, 255, 255] if i % 2 == 0 else [255,255,0] 
             try:
-                self.screen.set_at(scaled, [255,255,255])
+                scaled_rad = int(p.radius/self.config.scale)
+                if(scaled_rad <=1):
+                    self.screen.set_at(scaled, color)
+                else:
+                    pg.draw.circle(self.screen, color, scaled,scaled_rad)
             except OverflowError:
                 continue
         pg.display.update()

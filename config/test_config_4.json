@@ -1,13 +1,12 @@
 {
     "gravitational_constant": 10.0,
-    "repulsive_constant": 0,
     "creation_config": {
         "particle_generation": [{
             "num_particles": 50,
             "distribution_params": {
                 "mode": "circular",
                 "fill": true,
-                "radius":25,
+                "radius":200,
                 "center_point": [0, 5000]
             },
             "vector_params": {
@@ -19,13 +18,18 @@
                 "random": true,
                 "range": [1, 10],
                 "base_value": 5
+            },
+            "radius_params": {
+                "random": true,
+                "range": [1, 20],
+                "base_value": 10
             }
         }, {
             "num_particles": 50,
                 "distribution_params": {
                     "mode": "circular",
                     "fill": true,
-                    "radius": 25,
+                    "radius": 100,
                     "center_point": [0, -5000]
                 },
                 "vector_params": {
@@ -37,21 +41,29 @@
                     "random": true,
                     "range": [1, 50],
                     "base_value": 20
+                },
+                "radius_params": {
+                    "random": true,
+                    "range": [1, 5],
+                    "base_value": 10
                 }
         }],
         "known_particles": [{
             "mass": 5000,
             "position": [0, 5000],
-            "velocity": [1000, 0]
+            "velocity": [1000, 0],
+            "radius": 70
         },{
             "mass": 5000,
             "position": [5000, 5],
-            "velocity": [-1000, 0]
+            "velocity": [-1000, 0],
+            "radius": 90
         },
         {
-            "mass": 1000000000,
+            "mass": 100000000,
             "position": [0, 0],
-            "velocity": [0,0]
+            "velocity": [0,0],
+            "radius": 1000
         }
     ]
     },
@@ -62,7 +74,7 @@
     },
     "view_config": {
         "dimensions": [1200, 1080],
-        "scale": 50,
-        "center_heaviest": true
+        "scale": 1000,
+        "center_heaviest": false
     }
 }

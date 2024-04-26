@@ -1,6 +1,5 @@
 {
     "gravitational_constant": 10.0,
-    "repulsive_constant": 50,
     "creation_config": {
         "particle_generation": [
             {
@@ -20,6 +19,11 @@
                     "random": true,
                     "range": [1, 100],
                     "base_value": 1
+                },
+                "radius_params": {
+                    "random": true,
+                    "range": [1, 5],
+                    "base_value": 0.5
                 }
             }
         ],
