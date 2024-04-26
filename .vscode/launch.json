@@ -31,6 +31,14 @@
             "program": "main.py",
             "console": "integratedTerminal",
             "args": "./config/test_config_4.json"
+        },
+        {
+            "name": "Python Debugger: test_config_5.json",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "main.py",
+            "console": "integratedTerminal",
+            "args": "./config/test_config_5.json"
         }
     ]
 }

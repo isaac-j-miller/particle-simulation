@@ -1,0 +1,74 @@
+{
+    "gravitational_constant": 10,
+    "creation_config": {
+        "particle_generation": [
+            {
+                "num_particles": 50,
+                "distribution_params": {
+                    "mode": "circular",
+                    "fill": true,
+                    "radius": 100,
+                    "center_point": [0,300]
+                },
+                "vector_params": {
+                    "random": true,
+                    "range": [-1, 1],
+                    "base_value": [10,0]
+                },
+                "mass_params": {
+                    "random": true,
+                    "range": [1, 10],
+                    "base_value": 10
+                },
+                "radius_params": {
+                    "random": true,
+                    "range": [1, 5],
+                    "base_value": 5
+                }
+            },
+            {
+                "num_particles": 100,
+                "distribution_params": {
+                    "mode": "circular",
+                    "fill": true,
+                    "radius": 100,
+                    "center_point": [0,-300]
+                },
+                "vector_params": {
+                    "random": true,
+                    "range": [-1, 1],
+                    "base_value": [-10,0]
+                },
+                "mass_params": {
+                    "random": true,
+                    "range": [1, 10],
+                    "base_value": 10
+                },
+                "radius_params": {
+                    "random": true,
+                    "range": [1, 5],
+                    "base_value": 5
+                }
+
+            }
+        ],
+        "known_particles": [
+            {
+                "mass": 10000,
+                "position": [0, 0],
+                "velocity": [0, 0],
+                "radius": 25
+            }
+        ]
+    },
+    "client_config": {
+        "simulation_time_per_frame": 0.5,
+        "frames_per_second": 120,
+        "simulation_duration_seconds": 60
+    },
+    "view_config": {
+        "dimensions": [1080, 1080],
+        "scale": 2,
+        "center_heaviest": true
+    }
+}
