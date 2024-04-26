@@ -3,7 +3,7 @@
     "repulsive_constant": 0,
     "creation_config": {
         "particle_generation": [{
-            "num_particles": 100,
+            "num_particles": 50,
             "distribution_params": {
                 "mode": "circular",
                 "fill": true,
@@ -13,7 +13,7 @@
             "vector_params": {
                 "random": false,
                 "range": [-1, 1],
-                "base_value": [500, 0]
+                "base_value": [1000, 0]
             },
             "mass_params": {
                 "random": true,
@@ -21,7 +21,7 @@
                 "base_value": 5
             }
         }, {
-            "num_particles": 100,
+            "num_particles": 50,
                 "distribution_params": {
                     "mode": "circular",
                     "fill": true,
@@ -31,7 +31,7 @@
                 "vector_params": {
                     "random": false,
                     "range": [-1, 1],
-                    "base_value": [-500, 0]
+                    "base_value": [-1000, 0]
                 },
                 "mass_params": {
                     "random": true,
@@ -42,11 +42,11 @@
         "known_particles": [{
             "mass": 5000,
             "position": [0, 5000],
-            "velocity": [500, 0]
+            "velocity": [1000, 0]
         },{
             "mass": 5000,
             "position": [5000, 5],
-            "velocity": [-500, 0]
+            "velocity": [-1000, 0]
         },
         {
             "mass": 1000000000,
@@ -57,12 +57,12 @@
     },
     "client_config": {
         "simulation_time_per_frame": 0.125,
-        "frames_per_second": 30,
+        "frames_per_second": 60,
         "simulation_duration_seconds": 180
     },
     "view_config": {
-        "dimensions": [800, 800],
-        "scale": 100,
+        "dimensions": [1200, 1080],
+        "scale": 50,
         "center_heaviest": true
     }
 }

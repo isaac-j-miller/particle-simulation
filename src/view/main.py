@@ -24,7 +24,11 @@ class View:
             heaviest = particles[self.heaviest_particle_idx].position
             transform = [-1*heaviest[0], -1*heaviest[1]]
         
-        for p in particles:
+        for i, p in enumerate(particles):
             scaled = [int(((p.position[0]+transform[0])/ self.config.scale)) + scaled_transform[0], int((p.position[1]+transform[1])/self.config.scale)+scaled_transform[1]]
-            self.screen.set_at(scaled, [255, 255, 255])
+            # color = [255, 255, 255] if i % 2 == 0 else [255,255,0] 
+            try:
+                self.screen.set_at(scaled, [255,255,255])
+            except OverflowError:
+                continue
         pg.display.update()
