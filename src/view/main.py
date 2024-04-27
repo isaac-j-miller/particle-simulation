@@ -41,8 +41,12 @@ class View:
         scaled_transform = [int(self.config.dimensions[0]/2), int(self.config.dimensions[1]/2)]
         center_to_use = [int(self.config.dimensions[0]/2), int(self.config.dimensions[1]/2)]
         if self.config.color_velocity:
+            if self.config.center_heaviest:
+                point_of_reference_velocity = array(particles[self.heaviest_particle_idx].velocity)
+            else:
+                point_of_reference_velocity = array([0, 0])
             if self.config.use_relative_color_scale:
-                velocities = [magnitude(p.velocity) for i, p in enumerate(particles) if i not in exiled]
+                velocities = [magnitude(array(p.velocity)-point_of_reference_velocity) for i, p in enumerate(particles) if i not in exiled]
                 if len(velocities) == 0:
                     return set()
                 min_vel = min(velocities)
@@ -50,10 +54,7 @@ class View:
             else:
                 min_vel = self.config.color_scale_velocity_bounds[0]
                 max_vel = self.config.color_scale_velocity_bounds[1]
-            if self.config.center_heaviest:
-                point_of_reference_velocity = array(particles[self.heaviest_particle_idx].velocity)
-            else:
-                point_of_reference_velocity = array([0, 0])
+                
         if self.config.center_heaviest:
             heaviest = particles[self.heaviest_particle_idx].position
             center_to_use = heaviest

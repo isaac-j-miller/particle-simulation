@@ -26,6 +26,10 @@ here are the parameters:
 - `color_velocity`: if true,  color the particles depending on their speed relative to the reference point
 - `trace`: if true, don't clear the screen on every render
 - `color_scheme`: the color scheme to use when coloring particles by their speed: [here is a list of color schemes that you can specify](https://matplotlib.org/stable/gallery/color/colormap_reference.html#sphx-glr-gallery-color-colormap-reference-py)
+- `color_scale_velocity_bounds`: a tuple representing the absolute speed range used to color the particles when `color_velocity` is true, and `use_relative_color_scale` is false. particles with speed above the upper bound will be clipped to 1.
+- `use_relative_color_scale`: if true, automatically determine a color scale at every render based on the min/max speeds at that instant. if false, use the `color_scale_velocity_bounds`
+- `background_color_rgb`: a tuple of ints between 0 and 255 representing the RGB background color. defaults to [255,255,255]. 
+- `default_particle_color_rgb`: a tuple of ints between 0 and 255 representing the RGB particle color. defaults to [0,0,0]. Only used if `color_velocity` is false. 
 
 `client_config`:
 - `simulation_time_per_frame`: this is the amount of simulation time that passes in each frame. a lower value means a higher-resolution (more accurate) simulation. 0.125 is a decent setting.
