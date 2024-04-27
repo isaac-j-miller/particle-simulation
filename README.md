@@ -20,7 +20,7 @@ here are the parameters:
 
 `view_config`:
 - `dimensions`: the literal size of the screen, in pixels
-- `scale`: the ratio of pixel:simulation-distance-unit. larger scale = zoom out. larger scale = zoom in
+- `scale`: the ratio of pixel:simulation-distance-unit. smaller scale = zoom out. larger scale = zoom in
 - `center_heaviest`: whether or not to center the viewport and velocity frame of reference on the most massive particle
 - `exile_distance`: the distance (in simulation distance units) from the outside of the screen boundary at which particles should be discarded
 - `color_velocity`: if true,  color the particles depending on their speed relative to the reference point
