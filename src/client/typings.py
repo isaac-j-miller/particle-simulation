@@ -16,4 +16,5 @@ class GlobalConfig:
     creation_config: CreationConfig
     client_config: ClientConfig
     view_config: ViewConfig
+    enable_collisions: bool=True
     

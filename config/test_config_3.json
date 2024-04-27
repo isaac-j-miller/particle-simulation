@@ -1,13 +1,14 @@
 {
     "gravitational_constant": 10.0,
+    "enable_collisions": false,
     "creation_config": {
         "particle_generation": [
             {
-                "num_particles": 100,
+                "num_particles": 50,
                 "distribution_params": {
                     "mode": "circular",
                     "fill": true,
-                    "radius": 50,
+                    "radius": 100,
                     "center_point": [700,700]
                 },
                 "vector_params": {
@@ -22,12 +23,12 @@
                 },
                 "radius_params": {
                     "random": true,
-                    "range": [1, 5],
-                    "base_value": 2
+                    "range": [3, 10],
+                    "base_value": 3
                 }
             },
             {
-                "num_particles": 100,
+                "num_particles": 50,
                 "distribution_params": {
                     "mode": "circular",
                     "fill": true,
@@ -52,21 +53,26 @@
             }
         ],
         "known_particles": [{
-            "mass": 50000,
+            "mass": 70000,
             "position": [400, 400],
             "velocity": [0, 0],
             "radius": 30
         }]
     },
     "client_config": {
-        "simulation_time_per_frame": 0.125,
-        "frames_per_second": 60,
+        "simulation_time_per_frame": 5,
+        "frames_per_second": 120,
         "simulation_duration_seconds": 180
     },
     "view_config": {
         "dimensions": [1600, 1000],
         "scale": 1,
         "center_heaviest": true,
-        "exile_distance": 5000
+        "exile_distance": 5000,
+        "trace": true,
+        "color_scheme": "autumn",
+        "color_scale_velocity_bounds": [0, 100],
+        "use_relative_color_scale": false,
+        "background_color_rgb": [255, 255, 255]
     }
 }

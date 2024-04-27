@@ -50,13 +50,13 @@
         }],
         "known_particles": [{
             "mass": 5000,
-            "position": [0, 5000],
-            "velocity": [1000, 0],
+            "position": [0, -5000],
+            "velocity": [-1000, 0],
             "radius": 70
         },{
             "mass": 5000,
-            "position": [5000, 5],
-            "velocity": [-1000, 0],
+            "position": [0, 5000],
+            "velocity": [1000, 0],
             "radius": 90
         },
         {
@@ -68,14 +68,17 @@
     ]
     },
     "client_config": {
-        "simulation_time_per_frame": 0.125,
-        "frames_per_second": 60,
+        "simulation_time_per_frame": 0.06125,
+        "frames_per_second": 120,
         "simulation_duration_seconds": 180
     },
     "view_config": {
         "dimensions": [1200, 1080],
         "scale": 50,
         "center_heaviest": false,
-        "exile_distance": 50000
+        "exile_distance": 50000,
+        "color_velocity": true,
+        "color_scheme": "viridis",
+        "trace": true
     }
 }

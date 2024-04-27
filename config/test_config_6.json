@@ -3,17 +3,17 @@
     "creation_config": {
         "particle_generation": [
             {
-                "num_particles": 50,
+                "num_particles": 100,
                 "distribution_params": {
                     "mode": "circular",
                     "fill": true,
-                    "radius": 100,
-                    "center_point": [0,300]
+                    "radius": 200,
+                    "center_point": [600,600]
                 },
                 "vector_params": {
                     "random": true,
                     "range": [-1, 1],
-                    "base_value": [100,0]
+                    "base_value": [0, 0]
                 },
                 "mass_params": {
                     "random": true,
@@ -27,50 +27,47 @@
                 }
             },
             {
-                "num_particles": 100,
+                "num_particles": 3,
                 "distribution_params": {
-                    "mode": "circular",
-                    "fill": true,
-                    "radius": 150,
-                    "center_point": [0,-300]
+                    "mode": "linear",
+                    "angle": 0.785,
+                    "starting_point": [0, 0],
+                    "spacing": 30
                 },
                 "vector_params": {
-                    "random": true,
+                    "random": false,
                     "range": [-1, 1],
-                    "base_value": [-80,0]
+                    "base_value": [100,100]
                 },
                 "mass_params": {
                     "random": true,
                     "range": [1, 10],
-                    "base_value": 10
+                    "base_value": 50
                 },
                 "radius_params": {
                     "random": true,
                     "range": [1, 5],
-                    "base_value": 10
+                    "base_value": 15
                 }
-
             }
         ],
-        "known_particles": [
-            {
-                "mass": 100000,
-                "position": [0, 0],
-                "velocity": [0, 0],
-                "radius": 25
-            }
-        ]
+        "known_particles": [{
+            "mass": 10000,
+            "position": [600, 200],
+            "radius": 100,
+            "velocity": [0,0]
+        }]
     },
     "client_config": {
-        "simulation_time_per_frame": 0.25,
+        "simulation_time_per_frame": 0.5,
         "frames_per_second": 120,
         "simulation_duration_seconds": 180
     },
     "view_config": {
         "dimensions": [1080, 1080],
-        "scale": 3,
+        "scale": 4,
         "center_heaviest": true,
-        "exile_distance": 5000,
+        "exile_distance": 15000,
         "color_velocity": true
     }
 }

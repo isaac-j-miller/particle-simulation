@@ -84,7 +84,7 @@ class ParticleGenerator:
             radius = self._get_particle_radius()
             particle = Particle(mass, position, vector, radius)
             particles.append(particle)
-
+        return particles
 
     def create_distribution(self) -> list[Particle]:
         if self.config.num_particles == 0:

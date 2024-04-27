@@ -115,11 +115,13 @@ class SimulationModel:
     particles: list[Particle]
     gravitational_constant: float
     exiled_particles: set[int]
+    enable_collisions: bool
 
-    def __init__(self, particles: list[Particle], gravitational_constant: float):
+    def __init__(self, particles: list[Particle], gravitational_constant: float, enable_collisions: bool):
         self.particles = particles
         self.gravitational_constant = gravitational_constant
         self.exiled_particles = set()
+        self.enable_collisions = enable_collisions
 
     def exile_particle(self, idx: int):
         self.exiled_particles.add(idx)
@@ -174,11 +176,12 @@ class SimulationModel:
     def _calculate_collisions(self, preliminary_vects: list[PreliminaryVector], time_delta: float) -> set[int]:
         done_collisions = set()
         particles_processed = set()
+        # TODO: figure out why sometimes particles can phase into larger particles and get stuck in them
+        # or maybe don't bother. it can be avoided by increasing the simulation resolution (decreasing simulation_time_per_frame)
         for i, p1 in enumerate(preliminary_vects):
             if i in self.exiled_particles:
                 continue
             particle_1 = self.particles[i]
-            # TODO: allow for > 2 collisions
             soonest_collision_time = None
             soonest_collision_idx = None
             for j, p2 in enumerate(preliminary_vects):
@@ -233,23 +236,12 @@ class SimulationModel:
         # print("<<<")
         forces_x, forces_y = self._calculate_forces()    
         preliminary_vects = self._calculate_preliminary_vectors(forces_x, forces_y, time_delta)
-        particles_processed = self._calculate_collisions(preliminary_vects, time_delta)
+        if self.enable_collisions:
+            particles_processed = self._calculate_collisions(preliminary_vects, time_delta)
+        else:
+            particles_processed = set()
         self._apply_preliminary_vectors(preliminary_vects, particles_processed)
         # print(">>>")
-        # to_ignore = set()
-        # for i, p1 in enumerate(self.particles):
-        #     if float_equals(magnitude(p1.velocity), 0):
-        #         continue
-        #     for j, p2 in enumerate(self.particles):
-        #         if i == j:
-        #             continue
-        #         hash_1 = f"{i}_{j}"
-        #         hash_2 = f"{j}_{i}"
-        #         if hash_1 in to_ignore or hash_2 in to_ignore:
-        #             continue
-        #         distance = calculate_distance(p1.position, p2.position)
-        #         if distance >= p1.radius + p2.radius:
-        #             to_ignore.add("{i}")
                 
         
         
