@@ -18,7 +18,9 @@ class Client:
         total_frames = self.config.simulation_duration_seconds * self.config.frames_per_second
         for _ in range(total_frames):
             self.model.calculate_new_positions(self.config.simulation_time_per_frame)
-            self.view.display(self.model.particles)
+            to_exile = self.view.display(self.model.particles, self.model.exiled_particles)
+            for idx in to_exile:
+                self.model.exile_particle(idx)
             clock.tick(self.config.frames_per_second)
 
 

@@ -1,6 +1,14 @@
 {
     "configurations": [
         {
+            "name": "Python Debugger: Current config file",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "main.py",
+            "console": "integratedTerminal",
+            "args": "${file}"
+        },
+        {
             "name": "Python Debugger: test_config.json",
             "type": "debugpy",
             "request": "launch",

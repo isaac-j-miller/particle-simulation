@@ -1,5 +1,5 @@
 {
-    "gravitational_constant": 5,
+    "gravitational_constant": 0,
     "creation_config": {
         "particle_generation": [],
         "known_particles": [
@@ -14,17 +14,24 @@
                 "position": [20, 30],
                 "velocity": [-2, -2],
                 "radius": 1
+            },
+            {
+                "mass": 5,
+                "position": [50, 60],
+                "velocity": [-6, -6],
+                "radius": 2
             }
         ]
     },
     "client_config": {
-        "simulation_time_per_frame": 0.25,
-        "frames_per_second": 60,
+        "simulation_time_per_frame": 0.125,
+        "frames_per_second": 5,
         "simulation_duration_seconds": 60
     },
     "view_config": {
         "dimensions": [800, 800],
-        "scale": 1,
-        "center_heaviest": true
+        "scale": 0.5,
+        "center_heaviest": true,
+        "exile_distance": 5000
     }
 }

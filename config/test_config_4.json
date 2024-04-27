@@ -60,7 +60,7 @@
             "radius": 90
         },
         {
-            "mass": 100000000,
+            "mass": 1000000000,
             "position": [0, 0],
             "velocity": [0,0],
             "radius": 1000
@@ -74,7 +74,8 @@
     },
     "view_config": {
         "dimensions": [1200, 1080],
-        "scale": 1000,
-        "center_heaviest": false
+        "scale": 50,
+        "center_heaviest": false,
+        "exile_distance": 50000
     }
 }

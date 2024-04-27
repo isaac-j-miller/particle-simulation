@@ -7,13 +7,13 @@
                 "distribution_params": {
                     "mode": "circular",
                     "fill": true,
-                    "radius": 100,
-                    "center_point": [400,400]
+                    "radius": 50,
+                    "center_point": [700,700]
                 },
                 "vector_params": {
                     "random": false,
-                    "range": [-1, 1],
-                    "base_value": [0,0]
+                    "range": [1, -1],
+                    "base_value": [0,-50]
                 },
                 "mass_params": {
                     "random": true,
@@ -23,14 +23,39 @@
                 "radius_params": {
                     "random": true,
                     "range": [1, 5],
-                    "base_value": 0.5
+                    "base_value": 2
+                }
+            },
+            {
+                "num_particles": 100,
+                "distribution_params": {
+                    "mode": "circular",
+                    "fill": true,
+                    "radius": 100,
+                    "center_point": [100,100]
+                },
+                "vector_params": {
+                    "random": false,
+                    "range": [1, -1],
+                    "base_value": [0,40]
+                },
+                "mass_params": {
+                    "random": true,
+                    "range": [1, 100],
+                    "base_value": 2
+                },
+                "radius_params": {
+                    "random": true,
+                    "range": [1, 10],
+                    "base_value": 3
                 }
             }
         ],
         "known_particles": [{
-            "mass": 500,
+            "mass": 50000,
             "position": [400, 400],
-            "velocity": [0, 0]
+            "velocity": [0, 0],
+            "radius": 30
         }]
     },
     "client_config": {
@@ -39,8 +64,9 @@
         "simulation_duration_seconds": 180
     },
     "view_config": {
-        "dimensions": [800, 800],
+        "dimensions": [1600, 1000],
         "scale": 1,
-        "center_heaviest": true
+        "center_heaviest": true,
+        "exile_distance": 5000
     }
 }

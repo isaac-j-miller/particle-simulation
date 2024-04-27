@@ -13,17 +13,17 @@
                 "vector_params": {
                     "random": true,
                     "range": [-1, 1],
-                    "base_value": [10,0]
+                    "base_value": [100,0]
                 },
                 "mass_params": {
                     "random": true,
                     "range": [1, 10],
-                    "base_value": 10
+                    "base_value": 20
                 },
                 "radius_params": {
                     "random": true,
                     "range": [1, 5],
-                    "base_value": 5
+                    "base_value": 10
                 }
             },
             {
@@ -31,13 +31,13 @@
                 "distribution_params": {
                     "mode": "circular",
                     "fill": true,
-                    "radius": 100,
+                    "radius": 150,
                     "center_point": [0,-300]
                 },
                 "vector_params": {
                     "random": true,
                     "range": [-1, 1],
-                    "base_value": [-10,0]
+                    "base_value": [-80,0]
                 },
                 "mass_params": {
                     "random": true,
@@ -47,14 +47,14 @@
                 "radius_params": {
                     "random": true,
                     "range": [1, 5],
-                    "base_value": 5
+                    "base_value": 10
                 }
 
             }
         ],
         "known_particles": [
             {
-                "mass": 10000,
+                "mass": 100000,
                 "position": [0, 0],
                 "velocity": [0, 0],
                 "radius": 25
@@ -62,13 +62,14 @@
         ]
     },
     "client_config": {
-        "simulation_time_per_frame": 0.5,
+        "simulation_time_per_frame": 0.25,
         "frames_per_second": 120,
-        "simulation_duration_seconds": 60
+        "simulation_duration_seconds": 180
     },
     "view_config": {
         "dimensions": [1080, 1080],
-        "scale": 2,
-        "center_heaviest": true
+        "scale": 3,
+        "center_heaviest": true,
+        "exile_distance": 5000
     }
 }

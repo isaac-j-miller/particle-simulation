@@ -40,7 +40,9 @@ def solve_intersection(eq1: tuple[tuple[float, float], float], eq2: tuple[tuple[
         return la.solve(left, right)
     except la.LinAlgError:
         return None
-    
+
+def calculate_distance(a: tuple[float, float], b: tuple[float,float]) -> float:
+    return math.sqrt((a[0]-b[0])**2+(a[1]-b[1])**2)
 
 def magnitude(vector: tuple[float, float]) -> float:
     return math.sqrt(vector[0]**2+vector[1]**2)
@@ -103,46 +105,59 @@ def solve_2d_momentum_equation_2(
     dt_after_intersection=time_delta-intersection_time
     fp1 = eval_equation(fv1,c1, dt_after_intersection)
     fp2 = eval_equation(fv2,c2, dt_after_intersection)
-    f1 = PreliminaryVector([c1[0], c1[1]], fp1, [fv1[0], fv1[1]])
-    f2 = PreliminaryVector([c2[0], c2[1]], fp2, [fv2[0], fv2[1]])
+    fv1_scaled = tuple((array(fp1) - c1_vect)/dt_after_intersection)
+    fv2_scaled = tuple((array(fp2) - c2_vect)/dt_after_intersection)
+    f1 = PreliminaryVector(c1, fp1, fv1_scaled)
+    f2 = PreliminaryVector(c2, fp2, fv2_scaled)
     return f1, f2
 
 class SimulationModel:
     particles: list[Particle]
     gravitational_constant: float
+    exiled_particles: set[int]
+
     def __init__(self, particles: list[Particle], gravitational_constant: float):
         self.particles = particles
         self.gravitational_constant = gravitational_constant
+        self.exiled_particles = set()
 
-    def calculate_new_positions(self, time_delta: float):
+    def exile_particle(self, idx: int):
+        self.exiled_particles.add(idx)
+
+    def _calculate_forces(self)-> tuple[list[float], list[float]]:
         forces_x: list[float] = [0 for _ in self.particles]
         forces_y: list[float] = [0 for _ in self.particles]
         done = set()
-        for i, p1 in enumerate(self.particles):
-            for j, p2 in enumerate(self.particles):
-                if i == j:
+        if not float_equals(0, self.gravitational_constant):
+            for i, p1 in enumerate(self.particles):
+                if i in self.exiled_particles:
                     continue
-                hash_1 = f"{i}_{j}"
-                hash_2 = f"{j}_{i}"
-                if hash_1 in done or hash_2 in done:
-                    continue
-                delta_y = p2.position[1] - p1.position[1]
-                delta_x = p2.position[0] - p1.position[0]
-                distance_squared = delta_x**2 + delta_y**2
-                if distance_squared == 0:
-                    continue
-                gravitational_force = self.gravitational_constant * p1.mass * p2.mass / distance_squared
-                theta = math.atan2(delta_y, delta_x)
-                grav_force_x = gravitational_force * math.cos(theta)
-                grav_force_y = gravitational_force * math.sin(theta)
-                forces_x[i] += grav_force_x
-                forces_y[i] += grav_force_y
-                forces_x[j] -= grav_force_x
-                forces_y[j] -= grav_force_y
-                done.add(hash_1)
-        # 
-        preliminary_vects: list[PreliminaryVector] = []
+                for j, p2 in enumerate(self.particles):
+                    if i == j or j in self.exiled_particles:
+                        continue
+                    hash_1 = f"{i}_{j}"
+                    hash_2 = f"{j}_{i}"
+                    if hash_1 in done or hash_2 in done:
+                        continue
+                    delta_y = p2.position[1] - p1.position[1]
+                    delta_x = p2.position[0] - p1.position[0]
+                    distance_squared = delta_x**2 + delta_y**2
+                    if distance_squared == 0:
+                        continue
+                    gravitational_force = self.gravitational_constant * p1.mass * p2.mass / distance_squared
+                    theta = math.atan2(delta_y, delta_x)
+                    grav_force_x = gravitational_force * math.cos(theta)
+                    grav_force_y = gravitational_force * math.sin(theta)
+                    forces_x[i] += grav_force_x
+                    forces_y[i] += grav_force_y
+                    forces_x[j] -= grav_force_x
+                    forces_y[j] -= grav_force_y
+                    done.add(hash_1)
+                    done.add(hash_2)
+        return (forces_x, forces_y)
 
+    def _calculate_preliminary_vectors(self, forces_x: list[float], forces_y: list[float], time_delta: float) -> list[PreliminaryVector]:
+        preliminary_vects: list[PreliminaryVector] = []
         for f_x, f_y, p in zip(forces_x, forces_y, self.particles):
             accel_x = f_x/p.mass
             accel_y = f_y/p.mass
@@ -154,51 +169,87 @@ class SimulationModel:
             p_y = p.position[1] + v_y * time_delta
             preliminary = PreliminaryVector(p.position, [p_x, p_y], [v_x, v_y])
             preliminary_vects.append(preliminary)
-        
+        return preliminary_vects
+
+    def _calculate_collisions(self, preliminary_vects: list[PreliminaryVector], time_delta: float) -> set[int]:
         done_collisions = set()
         particles_processed = set()
         for i, p1 in enumerate(preliminary_vects):
+            if i in self.exiled_particles:
+                continue
             particle_1 = self.particles[i]
             # TODO: allow for > 2 collisions
             soonest_collision_time = None
             soonest_collision_idx = None
             for j, p2 in enumerate(preliminary_vects):
-                if i == j:
+                if i == j or j in self.exiled_particles:
                     continue
                 hash_1 = f"{i}_{j}"
                 hash_2 = f"{j}_{i}"
-                if hash_1 in done_collisions or hash_2 in done:
+                if hash_1 in done_collisions or hash_2 in done_collisions:
                     continue
                 intersection_time= get_collision_time(particle_1.radius, self.particles[j].radius, p1, p2, time_delta)
-                if intersection_time is None:
-                    done_collisions.add(hash_1)
-                    continue
-                soonest_collision_time = intersection_time
-                soonest_collision_idx = j
-                # print(f"imminent collision between {i},{j} at t={soonest_collision_time}")
+                done_collisions.add(hash_1)
+                done_collisions.add(hash_2)
+                if intersection_time is not None and (soonest_collision_time is None or intersection_time < soonest_collision_time):
+                    soonest_collision_time = intersection_time
+                    soonest_collision_idx = j
+                    # print(f"imminent collision between {i},{j} at t={soonest_collision_time}")
 
-            done_collisions.add(hash_1)
             if soonest_collision_time is None or soonest_collision_idx is None:
                 continue
+
             particle_2 = self.particles[soonest_collision_idx]
-            result = solve_2d_momentum_equation_2(particle_1.mass, particle_2.mass, p1, p2, time_delta, soonest_collision_time)
+            particle_2_preliminary_vector = preliminary_vects[soonest_collision_idx]
+            result = solve_2d_momentum_equation_2(particle_1.mass, particle_2.mass, p1, particle_2_preliminary_vector, time_delta, soonest_collision_time)
             if result is None:
-                # print(f"invalid solution for collision of {i}, {soonest_collision_idx}")
+                print(f"invalid solution for collision of {i}, {soonest_collision_idx}")
                 continue
             # print(f"valid solution for collision of {i}, {soonest_collision_idx}")
             p1_new, p2_new = result
-            particle_1.position = p1_new.next_position
-            particle_1.velocity = p1_new.difference_vector
-            particle_2.position = p2_new.next_position
-            particle_2.velocity = p2_new.difference_vector
-            particles_processed.add(i)
-            particles_processed.add(j)
 
+            # print(f"{i}: ({particle_1.position[0]}, {particle_1.position[1]}) -> ({p1_new.next_position[0]}, {p1_new.next_position[1]})")
+            self.particles[i].position = p1_new.next_position
+            self.particles[i].velocity = p1_new.difference_vector
+            particles_processed.add(i)
+
+            # print(f"{soonest_collision_idx}: ({particle_2.position[0]}, {particle_2.position[1]}) -> ({p2_new.next_position[0]}, {p2_new.next_position[1]})")
+            self.particles[soonest_collision_idx].position = p2_new.next_position
+            self.particles[soonest_collision_idx].velocity = p2_new.difference_vector
+            particles_processed.add(soonest_collision_idx)
+
+        return particles_processed
+
+    def _apply_preliminary_vectors(self, preliminary_vects: list[PreliminaryVector], already_processed: set[int]):
         for i, prelim in enumerate(preliminary_vects):
-            if i in particles_processed:
+            if i in already_processed or i in self.exiled_particles:
                 continue
-            p = self.particles[i]
+            p = self.particles[i]            
+            # print(f"{i}: ({p.position[0]}, {p.position[1]}) -> ({prelim.next_position[0]}, {prelim.next_position[1]})")
             p.position = prelim.next_position
             p.velocity = prelim.difference_vector
+
+    def calculate_new_positions(self, time_delta: float):
+        # print("<<<")
+        forces_x, forces_y = self._calculate_forces()    
+        preliminary_vects = self._calculate_preliminary_vectors(forces_x, forces_y, time_delta)
+        particles_processed = self._calculate_collisions(preliminary_vects, time_delta)
+        self._apply_preliminary_vectors(preliminary_vects, particles_processed)
+        # print(">>>")
+        # to_ignore = set()
+        # for i, p1 in enumerate(self.particles):
+        #     if float_equals(magnitude(p1.velocity), 0):
+        #         continue
+        #     for j, p2 in enumerate(self.particles):
+        #         if i == j:
+        #             continue
+        #         hash_1 = f"{i}_{j}"
+        #         hash_2 = f"{j}_{i}"
+        #         if hash_1 in to_ignore or hash_2 in to_ignore:
+        #             continue
+        #         distance = calculate_distance(p1.position, p2.position)
+        #         if distance >= p1.radius + p2.radius:
+        #             to_ignore.add("{i}")
+                
         
         

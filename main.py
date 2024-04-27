@@ -24,7 +24,7 @@ def main(filename: str):
     model = SimulationModel(particles, config.gravitational_constant)
     view = View(config.view_config, heaviest_particle_idx)
     client = Client(view, model, config.client_config)
-    view.display(particles)
+    view.display(particles, set())
     # input("Press enter to start")
     client.start()
     input("Press enter to exit")
