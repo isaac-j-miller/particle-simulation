@@ -36,7 +36,7 @@ here are the parameters:
 
 `gravitational_constant`: basically how strong gravity is. set it to 0 to disable gravity. set it to a negative number to get some weird results. generally, it should be a positive number.
 
-`creation_config`: this defines how the particles are initially laid out. See types in `src/creator/typings.py` and the example configs for details
+`creation_config`: this defines how the particles are initially laid out. See types in `src/creator/typings.py` and the example configs for details. Maybe I'll write this out in more detail later.
 
 
 ## saving images
@@ -59,6 +59,7 @@ Here are some examples:
 - add linting/auto-formatting/unit tests/proper logging, etc.
 - add branch policies, require PRs
 - PR/CI
+- finish documentation
 
 ## contribute
 If you think this is cool and want to contribute or find an issue or have questions, feel free to create an issue or make a pull request.
