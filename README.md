@@ -42,12 +42,17 @@ here are the parameters:
 ## saving images
 After the simulation is complete, you will be prompted to save the final screenshot.
 Here are some examples:
-
+### high simulation resolution and the "magma" color scheme
 ![An example with high simulation resolution and the "magma" color scheme](./example_images/example_high_res.png)
 
+### "viridis" color scheme
 ![An example with the "viridis" color scheme](./example_images/example_viridis.png)
 
+### very low simulation resolution, collisions disabled, and the "autumn" color scheme
 ![An example with very low simulation resolution, collisions disabled, and the "autumn" color scheme](./example_images/no_collisions_low_res.png)
+
+### high-ish simulation resolution, collisions enabled, and the "autumn" color scheme with an abosolute color scale, instead of relative
+![An example with high-ish simulation resolution, collisions enabled, and the "autumn" color scheme with an abosolute color scale, instead of relative](./example_images/example_absolute_color_scale.png)
 
 ## todo: 
 - eventually I plan to add a way to save the simulation as as CSV and have a separate script to play it back

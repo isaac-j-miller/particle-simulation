@@ -4,10 +4,10 @@ from typing import Union
 
 @dataclass
 class ViewConfig:
-    dimensions: tuple[int, int]
-    scale: float
-    center_heaviest: bool
-    exile_distance: Union[None, float]
+    dimensions: tuple[int, int]=800,800
+    scale: float=1
+    center_heaviest: bool=False
+    exile_distance: Union[None, float]=5000
     color_velocity: bool = True
     trace: bool = False
     color_scheme: str = "viridis"

@@ -41,7 +41,7 @@ class ParticleGenerator:
             vector = self._get_particle_vector()
             radius = self._get_particle_radius()
             position = [ParticleGenerator._random_float(distribution_config.x_range[0], distribution_config.x_range[1]),ParticleGenerator._random_float(distribution_config.y_range[0], distribution_config.y_range[1])]
-            particle = Particle(mass, position, vector, radius)
+            particle = Particle(position, vector, radius, mass)
             particles.append(particle)
         return particles
 
@@ -68,7 +68,7 @@ class ParticleGenerator:
                 mass = self._get_particle_mass()
                 vector = self._get_particle_vector()    
                 radius = self._get_particle_radius()
-                particle = Particle(mass, position, vector, radius)
+                particle = Particle(position, vector, radius, mass)
                 particles.append(particle)
 
         return particles
@@ -82,7 +82,7 @@ class ParticleGenerator:
             mass = self._get_particle_mass()
             vector = self._get_particle_vector()    
             radius = self._get_particle_radius()
-            particle = Particle(mass, position, vector, radius)
+            particle = Particle(position, vector, radius, mass)
             particles.append(particle)
         return particles
 

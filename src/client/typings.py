@@ -12,9 +12,9 @@ class ClientConfig:
 
 @dataclass
 class GlobalConfig:
-    gravitational_constant: float
     creation_config: CreationConfig
     client_config: ClientConfig
     view_config: ViewConfig
+    gravitational_constant: float=10
     enable_collisions: bool=True
     

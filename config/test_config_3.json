@@ -1,6 +1,6 @@
 {
     "gravitational_constant": 10.0,
-    "enable_collisions": false,
+    "enable_collisions": true,
     "creation_config": {
         "particle_generation": [
             {
@@ -60,7 +60,7 @@
         }]
     },
     "client_config": {
-        "simulation_time_per_frame": 5,
+        "simulation_time_per_frame": 0.1,
         "frames_per_second": 120,
         "simulation_duration_seconds": 180
     },

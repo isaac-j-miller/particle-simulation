@@ -2,15 +2,15 @@ from dataclasses import dataclass
 from typing import Union
 import math
 import numpy as np
-from numpy import linalg as la, array
+from numpy import array
 
 from .typings import Particle
 
 @dataclass
 class PreliminaryVector:
-    current_position: list[float, float]
-    next_position: list[float, float]
-    difference_vector: list[float, float]
+    current_position: tuple[float, float]
+    next_position: tuple[float, float]
+    difference_vector: tuple[float, float]
 
 FLOAT_ZERO = 1e-12
 
@@ -24,30 +24,13 @@ def eval_equation(v: tuple[float, float], c: tuple[float, float], t: float)-> tu
     y = v[1]*t + c[1]
     return (x, y)
 
-
-# ((vx, x0), x1), ((vy, y0), y1)
-def to_equation(vect: PreliminaryVector) -> tuple[tuple[tuple[float, float], float]]:
-   x_parametric = ((vect.difference_vector[0], -1), -1*vect.current_position[0])
-   y_parametric = ((vect.difference_vector[1], -1), -1*vect.current_position[1])
-   return x_parametric, y_parametric
-
-def solve_intersection(eq1: tuple[tuple[float, float], float], eq2: tuple[tuple[float, float], float]) -> Union[None, float]:
-    left_1, right_1 = eq1
-    left_2, right_2 = eq2
-    left =  array([left_1, left_2])
-    right = array([right_1, right_2])
-    try:
-        return la.solve(left, right)
-    except la.LinAlgError:
-        return None
-
 def calculate_distance(a: tuple[float, float], b: tuple[float,float]) -> float:
     return math.sqrt((a[0]-b[0])**2+(a[1]-b[1])**2)
 
 def magnitude(vector: tuple[float, float]) -> float:
     return math.sqrt(vector[0]**2+vector[1]**2)
 
-def quadratic_equation(a: float, b: float, c: float) -> Union[list[float,float], None]:
+def quadratic_equation(a: float, b: float, c: float) -> Union[tuple[float,float], None]:
     if a == 0:
         return None
     discriminant = b**2-4*a*c
